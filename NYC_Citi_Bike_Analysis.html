@@ -130,7 +130,7 @@
 			</div>
 
 			<!-- Begin Featured Image -->
-			<img class="featured-image img-fluid" src="NYC_Citi_bike/bike.jpeg" alt="">
+			<img class="featured-image img-fluid" src="NYC_Citi_bike/bike.jpeg" alt="" height="400">
 			<!-- End Featured Image -->
 
 			<p>			
@@ -143,14 +143,15 @@
 				<p><strong>Summary:</strong><br>
 				In this article we will cover:</p>
 				<ol>
-				<li>Visualize S&P index movement and volume traded</li>
-				<li>Visualize key words in Trump's tweets.</li>
-				<li>Trump's mood by the hour of the day.</li>
-				<li>Plot all Trump's tweet along with S&P index</li>
-				<li>All the code to generate plots can be found on <a href="https://github.com/benliu91/What_does_trump_say" target="_blank" class="button special icon fa-book">Github</a></li>
+				<li>What questions can we ask about the 17 million bike trips?</li>
+				<li>Outline the process to clean and organize the data.</li>
+				<li>Understand the data by exploratory data analysis (EDA).</li>
+				<li>Some Feature Engineering and explanation on LightGBM.</li>
+				<li>Results and future work.</li>
+				<li>All the technical details can be found in notebooks on <a href="https://github.com/benliu91/NYC_Citi_Bike_2017" target="_blank" class="button special icon fa-book">Github</a></li>
 				</ol>
 				</blockquote>
-
+<!-- 
 				<blockquote>
 				<p>We will <strong>not</strong> cover here:</p>
 				<ol>
@@ -159,172 +160,140 @@
 				<li>Provide an actual prediction on stock market performance in real time.</li>
 				<li>Plot all Trump's tweet along with S&P index.</li>
 				</ol>
+				</blockquote> -->
+
+				<p>
+					New York City’s <a href="https://www.citibikenyc.com/" target="_blank" class="button special icon fa-book">Citi Bike</a>, has one of the largest bike shares system in the western world (China has a different story: by 2017, ofo and mobike have more than 1-million bikes in first-tier cities). It seems that more New Yorkers enjoy more and more using Citi Bike to commute these days: the number of bike trips increased over 60% over the past two years to a nearly 17 million trips in 2017. The number of bike stations almost doubled from 493 to 869.
+				</p>
+
+				<p> 
+					As a data scientist, I asked myself: what information can I gain from the data? Can I <strong>predict how long</strong> the trip is if I know where the bikers are going? Can I predict the <strong>total number</strong> of trips on a given day? The answer is <a <span style="color: #fc5168; font-weight: bold;">YES</span></a>.
+				</p>
+
+				<div id="p1g1_code">
+					<div style="align: left; text-align:center;">
+						<iframe width="960" height="600" frameborder="0" scrolling="no" src="./NYC_Citi_bike/total_num_prediction.html"></iframe>
+						<figcaption><strong class="markup">Fig 1.</strong> Total Daily Citi Bike Trips vs. Prediction
+						</figcaption>
+					</div>
+				</div>
+
+				<p>
+					One can predict the total number of daily trips really well and ahead of time (if one can predict the weather perfectly!). I use data from January to October as the training set and use the data from November and December as the validation set. You could tell that the model works really well (for holiday seasons as well) even trained with less than one-year of data. For individual trip durations, the LightGBM model with some tuning can predict more than 75% trips with less than 30% errors. 
+				</p>
+
+				<p><h2><b>The Data and how it is cleaned</b></h2></p>
+
+				<p>
+					All the bike data from 2013 up to one month ago can be found <a href="https://s3.amazonaws.com/tripdata/index.html" target="_blank" class="button special icon fa-book">here</a>, each CSV file contains monthly bike trips in both NYC and Jersey City. With some tweaks one can read all CSV files into a pandas dataframe:
+				</p>
+
+				<figure>
+					<div style="align: left; text-align:center;">
+						<img class="featured-image img-fluid" src="NYC_Citi_bike/pd_df.png" alt="">
+						<figcaption><strong class="markup">Fig 2.</strong> A pandas dataframe that shows the top 6 rows
+						</figcaption>
+					</div>
+				</figure>
+
+				<blockquote>
+					To summarize: 
+					<li>I removed all trips longer than 3600 seconds.</li> 
+					<li>Removed all trips end up in the same pickup location.</li>
+					<li>Removed all trips came from or to special stations (repair center etc).</li>
+					<li>Save station id and latitude, longitude as a dictionary to save nearly 2/3 of the space.</li>
+					<li>Imputed missing values for user type and user age.</li>
+					<li>Merged with weather data such as max, min, average temperature, precipitation etc.</li>
+					<li>Approximated trip distance by calculating Manhattan distance between two stations using GPS data.</li>
 				</blockquote>
 
 				<p>
-					It is no secret that President Trump likes to tweets his feelings or policies on domestic and foreign affairs. Some of them are powerful enough to trigger an immediate movement on Company's stock prices. 
+					Again, I will not go into the technical details here, feel free to visit the <a href="https://github.com/benliu91/NYC_Citi_Bike_2017" target="_blank" class="button special icon fa-book">Github</a> for more details.
 				</p>
 
-				<!-- emmbed tweet 推特-->
+				<p><h2><b>EDA</b></h2></p>
+				<p>
+					There are a number of interesting facts about Citi Bikes. I will try to highlight the important ones: The number of trips ratio between customers (non-regular) and subscribers is about 1:10. Most rides are finished within 20 minutes. Most rides take place during rush hours. There are a lot more trips during weekdays than weekends. The weather and temperature affect the total number of daily trips by a lot. On average, the speed of bike trips is above 3.5 mph. The correlation coefficient between the temperature and total daily trips is about 0.77 showing a really close relationship.
+				</p>
+
 				<figure>
-					<div style="align: left; text-align:center;">
-						<blockquote class="twitter-tweet tw-align-center" data-lang="en"><p lang="en" dir="ltr">Boeing is building a brand new 747 Air Force One for future presidents, but costs are out of control, more than $4 billion. Cancel order!</p>&mdash; Donald J. Trump (@realDonaldTrump) <a href="https://twitter.com/realDonaldTrump/status/806134244384899072?ref_src=twsrc%5Etfw">December 6, 2016</a></blockquote>
-						<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-						<figcaption><strong class="markup">Fig 1.</strong> Traders dumped Boeing shares and the price dropped 1 percent <br> temporarily after this tweet.
-						</figcaption>
-					</div>
-				</figure>
-
-
-
-				<p> So the big questions that we should ask:<br> <strong><h4>
-					<ol>
-					<li>How do we quantify the sentiment in each Tweet? <br></li>
-					<li>Can we use Trump tweets' sentiment to predict the stock market performance? </strong></h4></li>
-					</ol>
-				</p>
-
-				<p>
-					Although no one answered (publicly, some may have a perfect model and never revealed its secret) the second question, the first question can be answered with some confidence using <a href="https://github.com/cjhutto/vaderSentiment" target="_blank" <span style="color: #fc5168; font-weight: bold;">VADER</span> </a> Sentiment Analysis and is widely used in academic settings.
-				</p>
-
-				<p>
-					Twitter Sentiment Analysis is a process to compute the attitude of a tweet being positive, negative or neutral using natural language processing techniques. 
-				</p>
-
-				<p>
-					Regards to <strong>marketing</strong>, companies can use the technique to understand customer's response towards a product, brand or campaign, and decide further actions to acquire more users. During elections, it can be used to track <strong>political view</strong> and predict election outcomes.
-				</p>
-
-				<p>
-					There are some online articles to analyze President Trump's tweets, few, however, connect the results to the stock market performance. In this project, we aim to go through Trump's tweets from Jan-01-2017 to May-16-2018, extract insightful information and visualize them with the S&P 500 (The Standard & Poor's 500, is an American stock market index based on the market capitalizations of 500 large companies having common stock listed on the NYSE or NASDAQ) movement during the same period.
-				</p>
-
-
-				<!-- emmbed tweet 推特-->
-				<figure>
-					<div style="align: left; text-align:center;">
-						<blockquote class="twitter-tweet tw-align-center" data-lang="en"><p lang="en" dir="ltr">RECORD HIGH FOR S &amp; P 500!</p>&mdash; Donald J. Trump (@realDonaldTrump) <a href="https://twitter.com/realDonaldTrump/status/913760243770896389?ref_src=twsrc%5Etfw">September 29, 2017</a></blockquote>
-						<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-						<figcaption class="imageCaption">
-							<strong class="markup">Fig 2.</strong> President Trump tweeted about S&P index in November 2017
-						</figcaption>
+					<div style="align: left;">
+						<a><img src="NYC_Citi_bike/duration.png" style="float: left; width: 47%; margin-right: 1%; margin-bottom: 0.5em;" ></a>
+						<a><img src="NYC_Citi_bike/time_vs_avgtrips.png" style="float: left; width: 48%; margin-right: 1%; margin-bottom: 0.5em;" ></a>
 					</div>
 				</figure>
 
 				<p>
-				<h2 class="entry-content">S&P index, what about it?</h2>	
+					<strong class="markup">Fig 3.</strong> Many trips finished within 10 minutes; Trips peaked at 8:30 AM and 5:30 PM.
 				</p>
+				<figure>
+					<div style="align: left;">
+						<a><img src="NYC_Citi_bike/dow_avg_trips.png" style="float: left; width: 47%; margin-right: 1%; margin-bottom: 0.5em;" ></a>
+						<a><img src="NYC_Citi_bike/Cutomer_vs_subscriber.png" style="float: left; width: 48%; margin-right: 1%; margin-bottom: 0.5em;" ></a>
+					</div>
+				</figure>
 
 				<p>
-					 The S&P index went up from about 2250 in Jan 2017 to around 2870 in January 2018. The stock market became much wild since February: the fear for inflation in early February, the Facebook data privacy scandal over Cambridge Analytica's data usage during the election and the potential trade war between China and the United States all contributed the volatilities in the market. (feel free to play with the slider in the interactive plot below and hover on the different date)
+					<strong class="markup">Fig 4.</strong> People ride less on weekends; Commuters like to bike from May to October.
 				</p>
+
+				<figure>
+					<div style="align: left;">
+						<a><img src="NYC_Citi_bike/speed_dist.png" style="float: left; width: 47%; margin-right: 1%; margin-bottom: 0.4em;" ></a>
+						<a><img src="NYC_Citi_bike/Rain_vs_trips.png" style="float: left; width: 48%; margin-right: 1%; margin-bottom: 0.5em;" ></a>
+					</div>
+				</figure>
+
+				<p>
+					<strong class="markup">Fig 5.</strong> Speed is roughly normally distributed; Riders prefer sunny days over heavy rains.
+				</p>
+
+<!-- 				<a href="URL"><img src="NYC_Citi_bike/Rain_vs_trips.png" style="float: left; width: 30%; margin-right: 1%; margin-bottom: 0.5em;" ></a> -->
+
+
 
 				<div id="p1g1_code">
 					<div style="align: left; text-align:center;">
-						<iframe width="830" height="600" frameborder="0" scrolling="no" src="what_does_trump_say/candlestick-stock.html"></iframe>
-						<figcaption><strong class="markup">Fig 3.</strong> S&P index movement since 01-02-2017
+						<iframe width="830" height="600" frameborder="0" scrolling="no" src="NYC_Citi_bike/Absolute.gif"></iframe>
+						<figcaption><strong class="markup">Fig 6.</strong> Annotation to show Absolute Traffics among different <br>neighborhood every half-hour<br>
+						</figcaption>
+					</div>
+				</div>
+
+				<div id="p1g1_code">
+					<div style="align: left; text-align:center;">
+						<iframe width="960" height="600" frameborder="0" scrolling="no" src="./NYC_Citi_bike/multiple-axes.html"></iframe>
+						<figcaption><strong class="markup">Fig 7.</strong> Weather and Temperature's affect on number of trips
 						</figcaption>
 					</div>
 				</div>
 
 				<p>
-					Do Trump's Tweets have anything to do with it? Let's take a closer look what are the frequently used terms that are used by President Trump. 
+					One can see that snow and heavy rains reduce the number of trips significantly. Also, the temperature and number of trips are highly correlated.
 				</p>
 
-				<figure>
-					<div style="align: left; text-align:center;">
-						<img class="featured-image img-fluid" src="what_does_trump_say/trump_tweets_word_cloud_all.png" alt="">
-						<figcaption><strong class="markup">Fig 4.</strong> A word cloud to show key words used in Trump's Tweets.
-						</figcaption>
-					</div>
-				</figure>
+				<p><h2><b>Feature Engineering</b></h2></p>
 
 				<p>
-					Perhaps it's better to separate negative and positive tweets and visualize the word cloud individually:
+					Regularized Target Encoding
 				</p>
-
-				<figure>
-					<div style="align: left; text-align:center;">
-						<img class="featured-image img-fluid" src="what_does_trump_say/neg_pos_tweets.png" alt="">
-						<figcaption><strong class="markup">Fig 5.</strong> Word clouds for negative and positive Tweets.
-						</figcaption>
-					</div>
-				</figure>
-
+				
+				<p><h2><b>Future Work</b></h2></p>	
 				<p>
-					No big suprise that we see terms like <strong>fake news</strong>, <strong>media</strong> used frequently in negative and <strong>thank</strong>, <strong>make america </strong>, <strong>great </strong>, <strong>tax cut </strong> used frequently in positive tweets.
-				</p>
-
-				<p>
-				<h2 class="entry-content">What time of the day is Trump happy?</h2>	
-				</p>
-
-				<figure>
-					<div style="align: left; text-align:center;">
-						<img class="featured-image img-fluid" src="what_does_trump_say/trump_mood.png" alt="">
-						<figcaption><strong class="markup">Fig 6.</strong> Tweet Sentiment Score groupby hour
-						</figcaption>
-					</div>
-				</figure>
-
-				<p>
-					 Observing the box plot above, one can reach a conclusion that Trump is positive during Working hours and is a little grumpy before and after work. Maybe expressing negativity on Twitter is a way to fight pressure from running the country!
+					Results are promising, future work could be: compare bike and taxi during rush hours.
+					Predict number of daily trips with ensemble method with time series components.
 				</p>
 
 
-				<figure>
-					<div style="align: left; text-align:center;">
-						<img class="featured-image img-fluid" src="what_does_trump_say/swamp_plot.png" alt="">
-						<figcaption><strong class="markup">Fig 7.</strong> Tweet Sentiment Score with a swamp plot
-						</figcaption>
-					</div>
-				</figure>
-
-				<p>
-					 A swamp plot shows that a lots of Tweets (both positive and negative ones) were tweeted before 9am Eastern Standard Time, most tweets from 3pm to 7pm are quite positive.
-				</p>
-
-
-				<p>
-				<h2 class="entry-content">Visualize all Trump's tweets with S&P 500 index</h2>
-					Here we present all Trump's Tweets as well as the S&P 500 index movement.
-				</p>
-
-				<div id="p1g1_code">
-					<div style="align: left; text-align:center;">
-						<iframe width="900" height="600" frameborder="0" scrolling="no" src="what_does_trump_say/SP500_Trump_Tweets.html"></iframe>
-						<figcaption><strong class="markup">Fig 8.</strong> S&P index with Trump's tweet
-						</figcaption>
-					</div>
-				</div>
-
-				<p>
-					Click on the legend to hide some lines. Move the slide bar to focus on certain days will make it easier to find tweets. For example, you could find the following tweet on Apr 4th, 2018:
-				</p>
-
-				<figure>
-					<div style="align: left; text-align:center;">
-						<blockquote class="twitter-tweet tw-align-center" data-lang="en"><p lang="en" dir="ltr">We are not in a trade war with China, that war was lost many years ago by the foolish, or incompetent, people who represented the U.S. Now we have a Trade Deficit of $500 Billion a year, with Intellectual Property Theft of another $300 Billion. We cannot let this continue!</p>&mdash; Donald J. Trump (@realDonaldTrump) <a href="https://twitter.com/realDonaldTrump/status/981492087328792577?ref_src=twsrc%5Etfw">April 4, 2018</a></blockquote>
-						<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-						<figcaption><strong class="markup">Fig 9.</strong> Trump Tweeted: Not in a trade war
-						</figcaption>
-					</div>
-				</figure>
-
-				<p>
-					After randomly browsing tweets, we could gain insight from the plot above: the Valder Sentiment Analysis does a good job at measuring the sentiment of a tweet. President Trump has changed his style to disclose information since the Boeing tweet. Trump's Tweet should not be treated as the first source to predict the next stock market movement. The daily sentiment score average also has almost 0 correlation with S&P 500 return on the same day.
-				</p>
-
+<!-- 
 				<blockquote>
 				<p><strong>Future Work:</strong>
 				<ol>
 				<li>Use LDA (Latent Dirichlet allocation) model to select tweets that relate to economics only (e.g. no complaints about fake news involved).</li>
 				<li>Focus on individual companies. e.g. How Trump's tweet on USPS delivery charges impact Amazon's stock price</li>
 				<li>Look deeper into sentiment analysis method: Trump being positive might not be a positive signal for the stock market or an individual stock</li>
-				<!-- <li>Plot all Trump's tweet along with S&P index</li> -->
 				</ol>
-				</blockquote>
+				</blockquote> -->
 
 
 			</div>
