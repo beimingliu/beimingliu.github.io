@@ -6,12 +6,24 @@
 -->
 <html>
 	<head>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<!-- For beimingliu.me tracking -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-119748328-1"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+
+		  gtag('config', 'UA-119748328-1');
+		</script>
+
 		<title>Portfolio</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+
 	</head>
 	<body>
 
@@ -72,7 +84,7 @@
 										template freebie by <a href="http://html5up.net">HTML5 UP</a>.</p> -->
 									</header>
 
-									<p>I was born and raised in Beijing, China. I received a <strong>BSc in Mathematics</strong> and <strong>MSc in Financial Engineering</strong> at the 	<span style="color: #053f72; font-weight: bold;">Imperial College London</span> where I built a solid theoretical foundation in Mathematics. I'm finishing the <a href="https://www.usfca.edu/arts-sciences/graduate-programs/data-science" target="_blank" <span style="font-weight: bold;">Master's of Science in Data Science (MSDS)</span> </a> at the <span style="color: #07533d; font-weight: bold;">University of San Francisco</span> </a> in June 2018 and am looking for interesting data science opportunities in the Bay Area.</p> 
+									<p>I was born and raised in Beijing, China. I received a <strong>BSc in Mathematics</strong> and <strong>MSc in Financial Engineering</strong> at the 	<span style="color: #053f72; font-weight: bold;">Imperial College London</span> in London United Kingdom, where I built a solid theoretical foundation in Mathematics. I'm finishing the <a href="https://www.usfca.edu/arts-sciences/graduate-programs/data-science" target="_blank" <span style="font-weight: bold;">Master's of Science in Data Science (MSDS)</span> </a> at the <span style="color: #07533d; font-weight: bold;">University of San Francisco</span> </a> in June 2018 and am looking for interesting data science opportunities in the Bay Area.</p> 
 									
 									<p>I started my first job in a Venture Capital firm in the Bay Area that invested in artificial intelligence (AI) and autonomous vehicles startups. There, I researched on AI and how it revolutionized business operations in many industries. I also received my first exposure to data science at the company. Wanting to learn more, I enrolled in the University of San Francisco data science masters program last year.</p>
 
@@ -96,7 +108,7 @@
 
 									<header class="major">
 										<!-- #TODO update resume in dropbox/google drive -->
-										<a href="https://www.linkedin.com/in/beiming-liu/" target="_blank" class="button special icon fa-book">My resume</a>
+										<a href="https://www.linkedin.com/in/beiming-liu/" onclick="gtag('event', 'reference', {'event_category' : 'image', 'event_label' : 'resume', 'value' : 10 });" target="_blank" class="button special icon fa-book">My resume</a>
 									</header>
 
 								</div>
@@ -115,9 +127,10 @@
 									<!-- LEGOIT -->
 									<div class="features">
 									<article>
-										<a href="http://legoit.us/" target="_blank" class="image">
+										<a href="http://legoit.us/" onclick="gtag('event', 'reference', {'event_category' : 'image', 'event_label' : 'legoit', 'value' : 5 });" target="_blank" class="image">
 											<img src="./images/LEGOIT.png" alt=""></a>
 										<div class="inner">
+										<a href="http://legoit.us/" onclick="gtag('event', 'reference', {'event_category' : 'image', 'event_label' : 'legoit', 'value' : 5 });" target="_blank" class="image">
 											<h4><a href="https:www.legoit.us" target="_blank"><span style="color: #6fdaec; font-weight: bold;">LEGOIT</span></a></h4>
 											<!-- #0000FF blue -->
 											<!-- #008000 green -->
@@ -129,6 +142,7 @@
 									<!-- Trump -->
 									<div class="features">
 									<article>
+										<a href="http://legoit.us/" onclick="gtag('event', 'reference', {'event_category' : 'image', 'event_label' : 'Trump', 'value' : 5 });" target="_blank" class="image">
 										<a href="Trump.html" class="image"><img src="./images/trump_project.png" alt=""></a>
 										<div class="inner">
 											<h4><a href="https://github.com/benliu91/What_does_trump_say" target="_blank"><span style="color: #6fdaec; font-weight: bold;">What does Trump say? (and how stock market reacts)</span></a></h4>
@@ -143,6 +157,7 @@
 									<!-- World Trade -->
 									<div class="features">
 									<article>
+										<a href="http://legoit.us/" onclick="gtag('event', 'reference', {'event_category' : 'image', 'event_label' : 'data_vis', 'value' : 5 });" target="_blank" class="image">
 										<a href="http://ec2-52-40-169-220.us-west-2.compute.amazonaws.com:8080/" target="_blank" class="image">
 											<img src="./images/global_trade.jpg" alt=""></a>
 										<div class="inner">
