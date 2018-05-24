@@ -129,8 +129,16 @@
 
 			</div>
 
+			<div id="p1g1_code">
+				<div style="align: left; text-align:left;">
+					<iframe width="830" height="420" frameborder="0" scrolling="no" src="./NYC_Citi_bike/NYC400.html" ></iframe>
+					<figcaption><strong class="markup"></strong> Most popular 400 NYC bike trips: <span style="color: #56d2ff; font-weight: italic;">Blue</span> dots indicate pickup stations and <span style="color: #49ff80; font-weight: italic;">Green</span> dots indicate dropoff stations. A number of popular destinations: <b>Pershing Square North (Grand Central Terminal)</b>, <b>Central Park South & 6 Ave</b> and <b> 12 Ave & W 40 St (Pier)</b>. Zoom in and click on stations to see the names or the links connecting to dots to see the number of trips.
+					</figcaption>
+				</div>
+			</div>
+
 			<!-- Begin Featured Image -->
-			<img class="featured-image img-fluid" src="NYC_Citi_bike/bike.jpeg" alt="" height="400">
+			<!-- <img class="featured-image img-fluid" src="NYC400.html" alt="" height="400"> -->
 			<!-- End Featured Image -->
 
 			<p>			
@@ -179,13 +187,13 @@
 				</div>
 
 				<p>
-					One can predict the total number of daily trips really well and ahead of time (if one can predict the weather perfectly!). I use data from January to October as the training set and use the data from November and December as the validation set. You could tell that the model works really well (for holiday seasons as well) even trained with less than one-year of data. For individual trip durations, the LightGBM model with some tuning can predict more than 75% trips with less than 30% errors. 
+					One can predict the total number of daily trips really well and ahead of time (if one can predict the weather perfectly). I use data from January to October as the training set and use the data from November and December as the validation set. You could tell that the model works really well (for holiday seasons as well) even trained with less than one-year of data. For individual trip durations, the LightGBM model with some tuning can predict more than 75% trips with less than 30% errors. 
 				</p>
 
 				<p><h2><b>The Data and how it is cleaned</b></h2></p>
 
 				<p>
-					All the bike data from 2013 up to one month ago can be found <a href="https://s3.amazonaws.com/tripdata/index.html" target="_blank" class="button special icon fa-book">here</a>, each CSV file contains monthly bike trips in both NYC and Jersey City. With some tweaks one can read all CSV files into a pandas dataframe:
+					Many data scientists believe that 80% of the data science works lie in data cleaning and organizing,  properly cleaned and organized data set will improve the performance significantly. This section will explain where the data came from and explain (on a very high level) how the cleaning process works. All the bike data from 2013 up to one month ago can be found <a href="https://s3.amazonaws.com/tripdata/index.html" target="_blank" class="button special icon fa-book">here</a>, each CSV file contains monthly bike trips in both NYC and Jersey City. With some tweaks one can read all CSV files into a pandas dataframe:
 				</p>
 
 				<figure>
@@ -198,13 +206,13 @@
 
 				<blockquote>
 					To summarize: 
-					<li>I removed all trips longer than 3600 seconds.</li> 
-					<li>Removed all trips end up in the same pickup location.</li>
-					<li>Removed all trips came from or to special stations (repair center etc).</li>
+					<li>I remove all trips longer than 3600 seconds.</li> 
+					<li>Remove all trips end up in the same pickup location.</li>
+					<li>Remove all trips came from or to special stations (repair center etc).</li>
 					<li>Save station id and latitude, longitude as a dictionary to save nearly 2/3 of the space.</li>
-					<li>Imputed missing values for user type and user age.</li>
-					<li>Merged with weather data such as max, min, average temperature, precipitation etc.</li>
-					<li>Approximated trip distance by calculating Manhattan distance between two stations using GPS data.</li>
+					<li>Impute missing values for user type and user age.</li>
+					<li>Merge with weather data such as max, min, average temperature, precipitation etc.</li>
+					<li>Approximate trip distance by calculating Manhattan distance between two stations using GPS data.</li>
 				</blockquote>
 
 				<p>
@@ -213,7 +221,7 @@
 
 				<p><h2><b>EDA</b></h2></p>
 				<p>
-					There are a number of interesting facts about Citi Bikes. I will try to highlight the important ones: The number of trips ratio between customers (non-regular) and subscribers is about 1:10. Most rides are finished within 20 minutes. Most rides take place during rush hours. There are a lot more trips during weekdays than weekends. The weather and temperature affect the total number of daily trips by a lot. On average, the speed of bike trips is above 3.5 mph. The correlation coefficient between the temperature and total daily trips is about 0.77 showing a really close relationship.
+					There are a number of interesting facts about Citi Bikes. I will try to highlight the important ones: The number of trips ratio between customers (non-regular) and subscribers is about 1:10 (Although two groups of customers are fundamentally different in terms of biking behaviors, I decided not to build two separate models just for 10% of the population). Most rides are finished within 20 minutes. Most rides take place during rush hours. There are a lot more trips during weekdays than weekends. The weather and temperature affect the total number of daily trips by a lot. On average, the speed of bike trips is above 3.5 mph. The correlation coefficient between the temperature and total daily trips is about 0.77 showing a really close relationship.
 				</p>
 
 				<figure>
@@ -260,6 +268,10 @@
 					</div>
 				</div>
 
+				<p>
+					From the annotation one can tell that there are some clusters are always busy. The peak hours see a lot of traffic towards Grand Central Terminal and Wall Street.
+				</p>
+
 				<div id="p1g1_code">
 					<div style="align: left; text-align:center;">
 						<iframe width="960" height="600" frameborder="0" scrolling="no" src="./NYC_Citi_bike/multiple-axes.html"></iframe>
@@ -275,13 +287,40 @@
 				<p><h2><b>Feature Engineering</b></h2></p>
 
 				<p>
-					Regularized Target Encoding
+					The most important feature of our model to predict individual trip durations is the estimated distance between two stations. This is intuitive since longer trips usually take longer time. 
 				</p>
-				
+
+				<p>
+					I also used a technique called 'regularized target encoding' in this project to improve the model performance. 
+				</p>
+
+				<figure>
+					<div style="align: left; text-align:center;">
+						<img class="featured-image img-fluid" src="NYC_Citi_bike/encode.png" alt="">
+						<figcaption><strong class="markup">Fig 8.</strong> A simple Target Encoding example for categorical variable <strong>Gender</strong>
+						</figcaption>
+					</div>
+				</figure>
+
+				<p>
+					<b>Target encoding</b> basically map categorical variables into the mean (some also include variance or standard deviation) of the response variable (i.e. target variable). This approach improves the performance significantly especially when the response variable is loosely normally distributed.
+				</p>
+
+				<figure>
+					<div style="align: left; text-align:center;">
+						<img class="featured-image img-fluid" src="NYC_Citi_bike/CV.png" alt="">
+						<figcaption><strong class="markup">Fig 9.</strong> Cross-Validation uses a portion of data as validation set and reduces bias
+						</figcaption>
+					</div>
+				</figure>
+
+				<p>
+					<b>Regularized</b> means that the encoding is calculated based on the average of cross-validations results thus the overfitting issue is greatly reduced.
+				</p>
+
 				<p><h2><b>Future Work</b></h2></p>	
 				<p>
-					Results are promising, future work could be: compare bike and taxi during rush hours.
-					Predict number of daily trips with ensemble method with time series components.
+					As mentioned in the begining of the article, the result shows that prediction for both invidual trip durations and total number of daily trips are decent. Future work could invovle getting NYC taxi, UBER data and check if UBER makes traffic better or worse or compare speed for Citi Bikes vs. UBER.
 				</p>
 
 
@@ -302,10 +341,11 @@
 			<!-- Begin Tags -->
 			<div class="after-post-tags">
 				<ul class="tags">
-					<li><a href="#">Sentiment Analysis</a></li>
-					<li><a href="#">Natural-Language Processing</a></li>
-					<li><a href="#">Stock Market</a></li>
-					<li><a href="#">Twitter Scraping</a></li>
+					<li><a href="#">Predictive Analysis</a></li>
+					<li><a href="#">Machine Learning</a></li>
+					<li><a href="#">GIS data</a></li>
+					<li><a href="#">LightGBM</a></li>
+					<li><a href="#">Target Encoding</a></li>
 				</ul>
 			</div>
 			<!-- End Tags -->
