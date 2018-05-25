@@ -132,7 +132,7 @@
 			<div id="p1g1_code">
 				<div style="align: left; text-align:left;">
 					<iframe width="830" height="420" frameborder="0" scrolling="no" src="./NYC_Citi_bike/NYC400.html" ></iframe>
-					<figcaption><strong class="markup"></strong> Most popular 400 NYC bike trips: <span style="color: #56d2ff; font-weight: italic;">Blue</span> dots indicate pickup stations and <span style="color: #49ff80; font-weight: italic;">Green</span> dots indicate dropoff stations. A number of popular destinations: <b>Pershing Square North (Grand Central Terminal)</b>, <b>Central Park South & 6 Ave</b> and <b> 12 Ave & W 40 St (Pier)</b>. Zoom in and click on stations to see the names or the links connecting to dots to see the number of trips.
+					<figcaption><strong class="markup"></strong> The most popular 400 NYC bike trips: pickup stations in <span style="color: #56d2ff; font-weight: italic;">Blue</span> and dropoff stations in <span style="color: #49ff80; font-weight: italic;">Green</span>, edge color shows how popular the trip is. Some of popular destinations: <b>Pershing Square North (Grand Central Terminal)</b>, <b>Central Park South & 6 Ave</b> and <b> 12 Ave & W 40 St (Pier)</b>. Zoom in and click on stations to see the names or the edges to see the number of trips between two stations.
 					</figcaption>
 				</div>
 			</div>
@@ -151,12 +151,13 @@
 				<p><strong>Summary:</strong><br>
 				In this article we will cover:</p>
 				<ol>
-				<li>What questions can we ask about the 17 million bike trips?</li>
+				<li>Introduction to the project.</li>
+				<li>Analytical Results.</li>
 				<li>Outline the process to clean and organize the data.</li>
 				<li>Understand the data by exploratory data analysis (EDA).</li>
-				<li>Some Feature Engineering and explanation on LightGBM.</li>
-				<li>Results and future work.</li>
-				<li>All the technical details can be found in notebooks on <a href="https://github.com/benliu91/NYC_Citi_Bike_2017" target="_blank" class="button special icon fa-book">Github</a></li>
+				<li>Some Feature Engineering.</li>
+				<li>Potential future work.</li>
+				<li>All the technical details can be found in notebooks on <a href="https://github.com/benliu91/NYC_Citi_Bike_2017" target="_blank" class="button special icon fa-book">Github</a>.</li>
 				</ol>
 				</blockquote>
 <!-- 
@@ -287,17 +288,13 @@
 				<p><h2><b>Feature Engineering</b></h2></p>
 
 				<p>
-					The most important feature of our model to predict individual trip durations is the estimated distance between two stations. This is intuitive since longer trips usually take longer time. 
-				</p>
-
-				<p>
-					I also used a technique called 'regularized target encoding' in this project to improve the model performance. 
+					The most important feature of our model to predict individual trip durations is the estimated distance between two stations. This is intuitive since longer trips usually take longer time. I also used a technique called <b>regularized target encoding</b> in this project to improve the model performance. 
 				</p>
 
 				<figure>
 					<div style="align: left; text-align:center;">
 						<img class="featured-image img-fluid" src="NYC_Citi_bike/encode.png" alt="">
-						<figcaption><strong class="markup">Fig 8.</strong> A simple Target Encoding example for categorical variable <strong>Gender</strong>
+						<figcaption><strong class="markup">Fig 8.</strong> A simple Target Encoding example for categorical variable <strong>Orange Types</strong>
 						</figcaption>
 					</div>
 				</figure>
@@ -318,9 +315,21 @@
 					<b>Regularized</b> means that the encoding is calculated based on the average of cross-validations results thus the overfitting issue is greatly reduced.
 				</p>
 
+				<figure>
+					<div style="align: left; text-align:center;">
+						<img class="featured-image img-fluid" src="NYC_Citi_bike/feat_imp.png" alt="">
+						<figcaption><strong class="markup">Fig 10.</strong>Feature importance to show the important features
+						</figcaption>
+					</div>
+				</figure>
+
+				<p>
+					The final model was trained on LightGBM model (much faster than XGBoost and feasible to train on personal laptops) with 16.1 million trips and more than 40 features, model parameters were tuned based on validation set (20% of randomly chosen from the data). The important features include the estimated distance between two stations, user type(Regular or One-time-user), where the trip starts/end. A little surprised that weather did not affect a lot to the trip duration.
+				</p>
+
 				<p><h2><b>Future Work</b></h2></p>	
 				<p>
-					As mentioned in the begining of the article, the result shows that prediction for both invidual trip durations and total number of daily trips are decent. Future work could invovle getting NYC taxi, UBER data and check if UBER makes traffic better or worse or compare speed for Citi Bikes vs. UBER.
+					As mentioned in the begining of the article, the result shows that prediction for both invidual trip durations and total number of daily trips are decent. Future work could invovle getting NYC taxi, UBER data and verify if UBER makes traffic better; a project to compare speed for Citi Bikes vs. UBER might also be interesting.
 				</p>
 
 
