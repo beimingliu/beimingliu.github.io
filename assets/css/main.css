@@ -2613,7 +2613,7 @@
 		background-size: cover;
 		content: '';
 		display: block;
-		height: 18.7em;
+		height: 14em;
 		width: 100%;
 	}
 
@@ -2961,7 +2961,7 @@
 			}
 
 				#header > header {
-					padding: 2em;
+					padding: 1em;
 				}
 
 					#header > header .avatar {
@@ -2978,19 +2978,19 @@
 					}
 
 				#header > footer {
-					padding: 1.5em;
+					padding: 1em;
 				}
 
 		/* Main */
 
 			#main > section > .container {
-				padding: 2em 0 0 0;
+				padding: 1em 0 0 0;
 			}
 
 		/* One */
 
 			#one:before {
-				height: 7em;
+				height: 1em;
 			}
 
 		/* Footer */
